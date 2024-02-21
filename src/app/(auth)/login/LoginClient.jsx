@@ -10,6 +10,10 @@ import AutoSigninCheckbox from '@/components/autoSigninCheckbox/AutoSigninCheckb
 import Divider from '@/components/divider/Divider';
 import Button from '@/components/button/Button';
 import Link from 'next/link';
+import { toast } from 'react-toastify';
+import { signInWithEmailAndPassword, signInWithPopup } from 'firebase/auth';
+import { auth } from '@/firebase/firebase';
+import { GoogleAuthProvider } from 'firebase/auth';
 
 const LoginClient = () => {
 	const [isLoading, setIsLoading] = useState(false);
@@ -21,12 +25,33 @@ const LoginClient = () => {
 		router.push('/');
 	};
 	const loginUser = (e) => {
-		// FIREBASE 이용
 		e.preventDefault();
 		setIsLoading(true);
+		signInWithEmailAndPassword(auth, email, password)
+			.then((userCredential) => {
+				setIsLoading(false);
+				toast.success('로그인 성공');
+				redirectUser();
+			})
+			.catch((err) => {
+				setIsLoading(false);
+				toast.error(err.message);
+			});
+		// FIREBASE 이용
 	};
-	const signInGoogle = () => {
+	const signInGoogle = (e) => {
+		e.preventDefault();
 		// FIREBASE
+		const provider = new GoogleAuthProvider();
+		signInWithPopup(auth, provider)
+			.then((result) => {
+				console.log(result);
+				toast.success('로그인 성공');
+				redirectUser();
+			})
+			.catch((err) => {
+				toast.error(err.message);
+			});
 	};
 
 	return (

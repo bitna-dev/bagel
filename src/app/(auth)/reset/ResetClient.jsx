@@ -9,6 +9,7 @@ import Link from 'next/link';
 import React, { useState } from 'react';
 import styles from './Reset.module.scss';
 import bagel from '@/assets/bagel.svg';
+import { sendPasswordResetEmail } from 'firebase/auth';
 
 const ResetClient = () => {
 	const [isLoading, setIsLoading] = useState(false);
@@ -16,6 +17,15 @@ const ResetClient = () => {
 	const resetPassword = (e) => {
 		e.preventDefault();
 		setIsLoading(true);
+		sendPasswordResetEmail(auth, email)
+			.then(() => {
+				setIsLoading(false);
+				toast.success('Please check your email to reset your password');
+			})
+			.catch((err) => {
+				setIsLoading(false);
+				toast.error(err.message);
+			});
 	};
 	const signInGoogle = () => {
 		// FIREBASE

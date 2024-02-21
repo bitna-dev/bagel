@@ -9,6 +9,9 @@ import { useRouter } from 'next/navigation';
 import React, { useState } from 'react';
 import styles from './Register.module.scss';
 import bagel from '@/assets/bagel.svg';
+import { toast } from 'react-toastify';
+import { createUserWithEmailAndPassword } from 'firebase/auth';
+import { auth } from '../../../firebase/firebase';
 
 const RegisterClient = () => {
 	const [isLoading, setIsLoading] = useState(false);
@@ -19,7 +22,22 @@ const RegisterClient = () => {
 	const signupUser = (e) => {
 		// FIREBASE 이용
 		e.preventDefault();
+		if (password !== cPassword) {
+			return toast.error('비밀번호가 일치하지않습니다.');
+		}
 		setIsLoading(true);
+		createUserWithEmailAndPassword(auth, email, password)
+			.then((userCredentail) => {
+				const user = userCredentail.user;
+				console.log(user);
+				setIsLoading(false);
+				toast.success('가입완료');
+				router.push('/login');
+			})
+			.catch((err) => {
+				setIsLoading(false);
+				toast.error(err.message);
+			});
 	};
 	const signUpGoogle = () => {
 		// FIREBASE
