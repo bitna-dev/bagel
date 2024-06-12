@@ -14,6 +14,6 @@ const Home = () => {
 }
 
 const StyledComponent = styled.div`
-  height: 100vh;
+  height: 200vh;
 `
 export default Home
